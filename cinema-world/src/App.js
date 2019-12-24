@@ -96,13 +96,13 @@ class App extends React.Component {
       <header className="App-header">
 
         <h1>CINEMA WORLD</h1>
-        <h2>Opening Hours</h2>
-        <Button variant="contained" 
+          <Button variant="contained" 
                 color="primary" 
                 disabled={favorites === {}} 
                 onClick={() => this.setState({showFavorites: !showFavorites})}>
           {!!showFavorites ? "Hide Favorites" : "Show Favorites"}
         </Button>
+        <h2>Opening Hours</h2>
         <div className="opening-hours">
           <div className="hour">9:00</div>
           <div>-</div>
