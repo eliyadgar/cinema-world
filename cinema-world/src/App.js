@@ -31,18 +31,13 @@ class App extends React.Component {
     }
     if (searchTerm.length >= 3) {
       if (this.state.movies[searchTerm] 
-        && this.compareTimes(this.state.movies[searchTerm].lastUpdatedDate) < (1000 * 60 * 60)  ) {
+        && compareTimes(this.state.movies[searchTerm].lastUpdatedDate) < (1000 * 60 * 60)  ) {
           return 
       } else {
         const urlForSearch = `${consts.IMDB_BASE_URL+consts.TOKEN}&s=${searchTerm}`
         this.fetchUrl(urlForSearch, searchTerm)
       }
     }
-  }
-
-  compareTimes = (lastUpdatedDate) => {
-    const currentTime = new Date()
-    return (getTime(currentTime) - lastUpdatedDate)
   }
 
   fetchUrl = debounce((urlForSerach, searchTerm) => {
@@ -143,5 +138,9 @@ class App extends React.Component {
     )}
 }
 
+const compareTimes = (lastUpdatedDate) => {
+  const currentTime = new Date()
+  return (getTime(currentTime) - lastUpdatedDate)
+}
 
 export default App;
