@@ -1,0 +1,10 @@
+.hours-list {
+    display: flex;
+    flex-wrap: wrap;
+    overflow: scroll;
+    height: 110px;
+}
+
+.show-time {
+    margin: 3px
+}
