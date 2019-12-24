@@ -3,8 +3,10 @@ import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
+import Button from '@material-ui/core/Button';
 import InputLabel from '@material-ui/core/InputLabel';
 import Movie from './components/Movie'
+import Favorites from './components/Favorites'
 import debounce from 'lodash/debounce'
 import getTime from 'date-fns/getTime'
 
@@ -17,6 +19,8 @@ class App extends React.Component {
     this.state = {
       searchTerm: '', 
       movies: {},
+      favorites: {},
+      showFavorites: false,
     }
   }
 
@@ -69,9 +73,21 @@ class App extends React.Component {
 
   }, 500)
   
+  handleFavorites = (movie, liked) => {
+    if (liked === true) {
+      this.setState({favorites: {
+        ...this.state.favorites,
+        [movie.imdbID]: movie
+      }})
+    } else {
+      const updatedFavorites = this.state.favorites
+      delete updatedFavorites[movie.imdbID]
+      this.setState({favorites: updatedFavorites})
+    }
+  }
   
   render() {
-    const {movies, searchTerm} = this.state
+    const {movies, searchTerm, wishList, showFavorites, favorites} = this.state
     const moviesResponse = movies[searchTerm] && movies[searchTerm].moviesList.Response
     const moviesResults = movies[searchTerm] && movies[searchTerm].moviesList.Search
     
@@ -81,6 +97,12 @@ class App extends React.Component {
 
         <h1>CINEMA WORLD</h1>
         <h2>Opening Hours</h2>
+        <Button variant="contained" 
+                color="primary" 
+                disabled={favorites === {}} 
+                onClick={() => this.setState({showFavorites: !showFavorites})}>
+          {!!showFavorites ? "Hide Favorites" : "Show Favorites"}
+        </Button>
         <div className="opening-hours">
           <div className="hour">9:00</div>
           <div>-</div>
@@ -95,16 +117,26 @@ class App extends React.Component {
             </IconButton>
           </FormControl>
         </form>
-        { moviesResponse === 'False' ?
-          <div>No movies were found</div> :
-          <div className="movies-list">
-            { moviesResults && moviesResults.slice(0,5).map((movie, index) => { 
-                return (
-                  <Movie movie={movie} key={movie.imdbID}></Movie>
-                  )
-            })
-            }
-          </div>
+        { showFavorites === true ? 
+          <Favorites 
+            showFavorites={showFavorites} 
+            favorites={favorites} 
+            handleFavorites={this.handleFavorites}/> :
+          moviesResponse === 'False' ?
+            <div>No movies were found</div> :
+            <div className="movies-list">
+              { moviesResults && moviesResults.slice(0,5).map((movie, index) => { 
+                  return (
+                    <Movie 
+                      isFavorite={favorites[movie.imdbID]}
+                      movie={movie} 
+                      key={movie.imdbID} 
+                      handleFavorites={this.handleFavorites}>
+                    </Movie>
+                    )
+              })
+              }
+            </div>
         }
       </header>
     </div>

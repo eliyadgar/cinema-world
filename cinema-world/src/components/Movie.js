@@ -4,6 +4,9 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import IconButton from '@material-ui/core/IconButton';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 
 import consts from '../consts'
 import './Movie.css';
@@ -17,6 +20,7 @@ class Movie extends React.Component {
         this.state = {
             duration: '', 
             plot: '',
+            liked: this.props.isFavorite,
         }
     }
 
@@ -31,14 +35,27 @@ class Movie extends React.Component {
         })
     }
 
+    handleLikedClicked = (liked) => {
+        const {handleFavorites, movie} = this.props
+        handleFavorites(movie, liked)
+        this.setState({liked})
+    }
+
 
     render() {
-        const {movie} = this.props
-        const {duration, plot} = this.state
+        const {movie, isFavorite} = this.props
+        const {duration, plot, liked} = this.state
         const hoursFormat = convertToHoursFormat(duration)
         const hoursFormatStr = hoursFormat === "N/A" ? 'Duration is not available' : `${hoursFormat} hours`
         return (
             <Card className="card">
+                <IconButton className="iconButton2" aria-label="like" onClick={()=>this.handleLikedClicked(!isFavorite)}>
+                {!!isFavorite ? 
+                    <FavoriteIcon color="primary"/> :
+                    <FavoriteBorderIcon color="primary"/> 
+
+                }
+            </IconButton>
                 <CardHeader
                 className="movie-header"
                 title={movie.Title}
